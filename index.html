@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uma historia de amor</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #800080; /* Fundo roxo romântico */
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            background-color: rgba(128, 0, 128, 0.8); /* Fundo com transparência roxa */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        video {
+            max-width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background-color: #ff69b4; /* Cor inicial do botão */
+            color: white;
+            box-shadow: 0 5px #d47d8b;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        button:active {
+            background-color: #ff1493; /* Cor do botão quando pressionado */
+            box-shadow: 0 2px #d47d8b;
+            transform: translateY(2px);
+        }
+        #message {
+            margin-left: 20px;
+            font-size: 18px;
+            color: white;
+            white-space: pre-wrap;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <video id="myVideo">
+            <source src="animacao.mp4" type="video/mp4">
+            Seu navegador não suporta o formato de vídeo .mp4.
+        </video>
+        <div id="message">Que escuro aqui, posso te mostrar uma coisa?  acenda a Luz por favor</div>
+    </div>
+    <button id="playButton">Acender Luz</button>
+
+    <script>
+        function playSlow() {
+            const video = document.getElementById('myVideo');
+            const message = document.getElementById('message');
+            video.playbackRate = 0.5;
+            video.play();
+            
+            const pauseTimes = [1, 5, 9]; // Tempos em segundos para pausar o vídeo
+            var pauseDuration = 5000; // Duração da pausa em milissegundos (3 segundos)
+            let currentPauseIndex = 0;
+
+            const messages = [
+                "Olha que bagunça...",
+                "Mas mesmo parecendo tudo dezorganizado, ja estava tudo certo..",
+                "Você apareceu na minha vida, Te amo!"
+            ];
+
+            function typeMessage(text, index = 0) {
+                if (index < text.length) {
+                    message.textContent += text.charAt(index);
+                    setTimeout(() => typeMessage(text, index + 1), 100);
+                }
+            }
+
+            const checkTime = () => {
+                if (currentPauseIndex < pauseTimes.length && video.currentTime >= pauseTimes[currentPauseIndex] && !video.paused) {
+                    video.pause();
+                    message.textContent = "";
+                    typeMessage(messages[currentPauseIndex]);
+                    setTimeout(() => {
+                        message.textContent = "";
+                        video.play();
+                        currentPauseIndex++;
+                        requestAnimationFrame(checkTime);
+                    }, pauseDuration);
+                } else if (currentPauseIndex < pauseTimes.length) {
+                    requestAnimationFrame(checkTime);
+                }
+            };
+
+            // Limpar mensagem inicial e iniciar verificação de tempo
+            message.textContent = "";
+            requestAnimationFrame(checkTime);
+        }
+
+        document.getElementById('playButton').addEventListener('click', playSlow);
+    </script>
+</body>
+</html>
